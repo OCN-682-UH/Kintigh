@@ -3,7 +3,7 @@
 ## Created by: Isabella Kintigh
 ## Created on: 16 September 2025
 
-##################################################################################
+################################################################################
 
 #### Open libraries #########
 
@@ -113,7 +113,7 @@ penguins %>%
 penguins %>%
   summarise(mean_flipper = mean(flipper_length_mm, na.rm = TRUE))
 
-# CAlculate mean and mean flipper length
+# Calculate mean and mean flipper length
 
 penguins %>%
   summarise(mean_flipper = mean(flipper_length_mm, na.rm = TRUE),
@@ -147,6 +147,8 @@ penguins %>%
   ggplot(aes(x = sex,
              y = flipper_length_mm)) +
   geom_boxplot()
+
+
 
 
 
