@@ -1,4 +1,4 @@
-## This script is to practice using dplyr in week 4 with penguin data
+## Purpose: This script is to practice using dplyr in week 4 with penguin data
 
 ## Created by: Isabella Kintigh
 ## Created on: 16 September 2025
