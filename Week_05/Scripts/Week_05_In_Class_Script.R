@@ -79,6 +79,6 @@ anti_join(T1, T2)
 
 # ------------ Cow say -------------------
 
-say("hello", by = "alligator")
+say("hello", by = "cow_dead")
 
 ?cowsay
