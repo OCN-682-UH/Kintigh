@@ -1,0 +1,41 @@
+---
+title: "My first quarto doc"
+author: "Bella Kintigh"
+date: today
+format: 
+  html:
+    toc: true
+    theme: morph
+---
+
+## Introduction
+
+This is my first *Quarto* document and I am going to plot some penguin data.
+
+We are also learning basic Quarto. Here are all the ways I can change an 
+
+```{r}
+#| message: false
+library(tidyverse)
+library(here)
+library(palmerpenguins)
+```
+
+## Look at the data
+```{r}
+glimpse(penguins)
+```
+
+## Make a plot
+This looks at the relationship between **bill length** and **bill depth**.
+
+```{r}
+#| warning: false
+penguins %>% # penguin dataset
+  ggplot(aes(
+    x = bill_length_mm,
+    y = bill_depth_mm, 
+    color = species)) +
+  geom_point()
+```
+
