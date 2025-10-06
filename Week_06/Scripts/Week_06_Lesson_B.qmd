@@ -1,0 +1,95 @@
+---
+title: "My Quarto Practice 2"
+author: "Bella Kintigh"
+format: gfm
+prefer-html: true
+knitr: 
+  opts_chunk: 
+    fig.path: "../Output/"
+theme: lux
+---
+
+# Introduction 
+
+Today we are learning how to work with figures in Quarto for OCN 682.
+
+## Load the libraries
+
+```{r}
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(here)
+library(palmerpenguins)
+library(kableExtra)
+```
+
+# Make a plot
+
+```{r}
+#| message: false
+#| warning: false
+#| out-width: "70%"
+#| fig-align: "center"
+#| label: fig-penguin
+#| fig-cap: "This figure shows length by bill depth"
+
+library(palmerpenguins)
+library(tidyverse)
+
+penguins %>%
+  ggplot(aes(x = bill_length_mm, 
+             y = bill_depth_mm, 
+             color = species)) +
+  geom_point()
+```
+
+When you look at @fig-penguin you can see there is a positive relationship between bill length and bill depth 
+
+# Practice Table
+
+| Time  | Session | Topic    |
+|:------|:-------:|---------:|
+| _left_ | _center_| _right_ |
+| 01:00  | 1       | Anatomy |
+| 01:50  |         | *Break* |
+| 02:00  | 2       | Tables  |
+| 02:45  |         | *Break* |
+
+# Table with kable
+
+```{r}
+#| message: false
+#| warning: false
+#| label: tbl-penguin
+#| tbl-cap: "My awesome penguin table"
+
+library(kableExtra)
+library(palmerpenguins)
+library(tidyverse)
+
+penguins %>%
+  group_by(species) %>%
+  summarise(billmean = mean(bill_length_mm, na.rm = TRUE)) %>%
+  kbl() # make it a kable table
+```
+
+Table @tbl-penguin has information on the mean bill length by species.
+
+# Add Some Flair to the Table
+
+```{r}
+library(kableExtra)
+library(palmerpenguins)
+library(tidyverse)
+
+penguins %>%
+  group_by(species) %>%
+  summarise(billmean = round(mean(bill_length_mm, na.rm = TRUE))) %>%
+  kbl()  %>% # make it a kable table
+  kable_classic() %>% # add a theme
+  row_spec(2, bold = TRUE, color = "white", background = "blue") %>% # highlight row 2
+  kable_styling(full_width = FALSE) # don't make it so wide
+```
+

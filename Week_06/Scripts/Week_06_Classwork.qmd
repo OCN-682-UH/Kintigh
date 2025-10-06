@@ -12,7 +12,7 @@ format:
 
 This is my first *Quarto* document and I am going to plot some penguin data.
 
-We are also learning basic Quarto. Here are all the ways I can change an 
+We are also learning basic Quarto. 
 
 ```{r}
 #| message: false
