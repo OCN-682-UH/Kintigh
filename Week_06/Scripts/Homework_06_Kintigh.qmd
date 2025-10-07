@@ -1,0 +1,131 @@
+---
+title: "Week 6 Homework"
+author: "Bella Kintigh"
+format: 
+  html:
+    toc: true
+    theme: morph
+warning: false
+message: false
+date: today
+knitr: 
+  opts_chunk: 
+    fig.path: "../Output/"
+---
+
+# Introduction
+
+This is my **amazing** document displaying techniques I learned in Week 6 of OCN 682 of making an html using *Quarto*
+
+# Libraries Used
+
+```{r}
+library(tidyverse)
+library(here)
+library(gtExtras)
+library(gt)
+```
+
+# Data Information
+
+The dataset used comes from biogeochemical fieldwork conducted at two coastal sites in Hawaiʻi characterized by submarine groundwater discharge (SGD), the flow of fresh groundwater into the ocean through cracks in the reef plate. Sampling was performed under varying environmental and temporal conditions including:
+
+-   **Seasons:** wet and dry
+-   **Tide Stages:** high and low
+-   **Time of Day**: day and night
+
+## Variables Included
+
+| **Variable** | **Description** | **Units** |
+|:------------------------|:---------------------------|-------------------:|
+| Waypoint | Waypoint number recorded on the GPS | — |
+| Zone | Zone for submarine groundwater discharge (after Nelson et al. 2015) | — |
+| Lat | Latitude of sampling location | Decimal Degrees |
+| Long | Longitude of sampling location | Decimal Degrees |
+| Site | Site name | — |
+| Tide_time | Tide stage and time of day (e.g., high_day, low_night) | — |
+| Season | Sampling season (wet or dry) | — |
+| Temp_in | In situ water temperature | °C |
+| Salinity | Salinity | — |
+| Phosphate | Phosphate concentration | µmol/L |
+| Silicate | Silicate concentration | µmol/L |
+| NN | Nitrate + Nitrite concentration | µmol/L |
+| pH | pH of the sample | — |
+| TA | Total Alkalinity | µmol/kg |
+
+# Make a Table
+
+## Clean Up Data
+
+```{r}
+# Load in data and always check it 
+
+Chem_Data <- read_csv(here("Week_06", "Data", "chemicaldata_maunalua.csv"))
+
+# Clean and subset data for spring only
+
+Chem_Data_Clean <- Chem_Data %>%
+  separate(col = Tide_time, # Choose the tide column
+           into = c("Tide", "Time"), # Separate into two columns named Tide and Time
+           sep = "_") %>% # Separate by _ 
+  filter(Season == "SPRING") %>% # Filter for Spring only 
+  group_by(Site, Tide, Time) %>% 
+  summarise(
+    n = dplyr::n(), # the group size
+    across( # apply the same operation to columns
+      c(Temp_in, Salinity, NN, Phosphate, Silicate, pH, TA, Temp_in), # variables we want distributions for
+      ~ list(stats::na.omit(.x)) # keep the group's raw vector in a list cell (remove NAs)
+    ),
+    .groups = "drop" # return an ungrouped tibble afterwards
+  )
+```
+
+## Create the table
+
+```{r}
+
+Chem_Data_Clean %>%
+  arrange(Site, Tide, Time) %>% # sort for a logical display order
+  gt(groupname_col = "Site") %>%  # show Site as row-group labels in the table
+  tab_header(
+    title = md("**Spring Biogeochemistry**"),
+    subtitle = "Per-group distributions (raw values) by Site × Tide × Time"
+  ) %>%
+  cols_label( # pretty column headers for display
+    Tide      = "Tide",
+    Time      = "Time of Day",
+    n         = "n",
+    Temp_in   = "Temperature (°C)",
+    Salinity  = "Salinity",
+    NN        = "NN (µmol/L)",
+    Phosphate = "Phosphate (µmol/L)",
+    Silicate  = "Silicate (µmol/L)",
+    pH        = "pH",
+    TA        = "Total Alkalinity (µmol/kg)"
+  ) %>%
+  gt_plt_dist(column = Temp_in,   type = "density") %>%  # tiny density plot for Temperature per row
+  gt_plt_dist(column = Salinity,  type = "density") %>%  # tiny density plot for Salinity per row
+  gt_plt_dist(column = NN,        type = "density") %>%  # tiny density plot for NN per row
+  gt_plt_dist(column = Phosphate, type = "density") %>%  # tiny density plot for Phosphate per row
+  gt_plt_dist(column = Silicate,  type = "density") %>%  # tiny density plot for Silicate per row
+  gt_plt_dist(column = pH,        type = "density") %>%  # tiny density plot for pH per row
+  gt_plt_dist(column = TA,        type = "density") %>%  # tiny density plot for TA per row
+  tab_spanner(
+    label = "Hydrography",
+    columns = c(Temp_in, Salinity)
+  ) %>%
+  tab_spanner(
+    label = "Nutrients",
+    columns = c(NN, Phosphate, Silicate)
+  ) %>%
+  tab_spanner(
+    label = "Carbonate",
+    columns = c(pH, TA)
+  ) %>%
+  opt_row_striping() %>% # alternating row shading for readability
+  cols_width(# give each mini-plot column some breathing room
+    c(Temp_in, Salinity, NN, Phosphate, Silicate, pH, TA) ~ px(180)
+  )
+```
+
+
