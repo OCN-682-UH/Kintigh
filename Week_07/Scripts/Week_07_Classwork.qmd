@@ -1,0 +1,174 @@
+---
+title: "Week 7 Classwork"
+author: "Bella Kintigh"
+format: html
+warning: false
+message: false
+echo: true
+results: hide
+---
+
+# Introduction
+
+This documents classwork for week 6 of OCN 682
+
+# Load in libraries
+
+```{r}
+# Load libraries 
+
+library(tidyverse)
+library(here)
+library(maps)
+library(mapdata)
+library(mapproj)
+library(ggdogs)
+```
+
+# Today's Data
+
+```{r}
+# Read in data on population in California by county
+
+popdata <- read_csv(here("Week_07", "Data", "CAPopdata.csv"))
+
+# Read in data on number of seastars at different field sites
+
+stars <- read_csv(here("Week_07", "Data", "stars.csv"))
+```
+
+# Maps package
+
+```{r}
+# Get data for the entire world
+
+world <- map_data("world")
+
+glimpse(world)
+
+# Get data for the usa
+
+usa <- map_data("usa")
+
+glimpse(usa)
+
+# Get data for italy
+
+italy <- map_data("italy")
+
+glimpse(italy)
+
+# Get data for the states
+
+states <- map_data("state")
+
+glimpse(states)
+
+# Get data for counties
+
+counties <- map_data("county")
+
+glimpse(counties)
+
+
+```
+
+# Make a map of the world
+
+```{r}
+ggplot() +
+  geom_polygon(data = world, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group,
+                   fill = region),
+               color = "black") +
+  guides(fill = FALSE) +
+  theme_classic() +
+  theme(panel.background = element_rect(fill = "lightblue")) +
+  coord_map(projection = "cylindrical", 
+            xlim = c(-180, 180))
+```
+
+
+# A map of California
+
+```{r}
+# Use the states dataset
+
+CA_data <- states %>%
+  filter(region == "california")
+
+ggplot() +
+  geom_polygon(data = CA_data,
+               aes(x = long,
+                   y = lat,
+                   group = group),
+               fill = "#E35335") +
+  guides(fill = FALSE) +
+  coord_map()+
+  theme_void()
+```
+
+# Plot the population of every county in California
+
+```{r}
+# ---- Add multiple layers of data ----------
+
+# Look at the county data
+head(counties)[1:3,]
+
+# Make the column names the same to join the two datasets.
+
+glimpse(popdata)
+
+CApop_county <- popdata %>%
+  select("subregion" = County, Population)  %>% # rename the county col
+  inner_join(counties) %>%
+  filter(region == "california") # some counties have same names in other states
+
+# Map of CA by counties 
+
+ggplot()+
+geom_polygon(data = CApop_county, 
+             aes(x = long, 
+                 y = lat, 
+                 group = group,
+                 fill = Population),
+             color = "black")+
+  coord_map()+
+  theme_void() +
+  scale_fill_gradient(trans = "log10")
+```
+
+# Add data points to map layer 
+
+```{r}
+# Add map of CA population by county with seastars
+
+ggplot() +
+  geom_polygon(data = CApop_county, 
+               aes(x = long,
+                   y = lat,
+                   group = group,
+                   fill = Population),
+               color = "black") +
+  geom_point(data = stars,
+             aes(x = long, 
+                 y = lat,
+                 size = star_no)) +
+  coord_map() +
+  theme_void() +
+  scale_fill_gradient(trans = "log10") +
+  labs(size = "# stars/m2")
+
+ggsave(here("Week_07", "Output", "CApop.pdf"))
+
+  
+```
+
+
+
+
+
+
