@@ -1,0 +1,89 @@
+---
+title: "Week 7 Homework — Cats on the Move!"
+author: "Bella Kintigh"
+format:
+  html:
+    theme: solar
+    toc: true
+    code-fold: true
+warning: false
+message: false
+---
+
+# Purpose
+
+Map the **Cats on the Move!** GPS fixes (TidyTuesday 2023-01-31) to show where pet cats roam in southwest England using Quarto for Week 7 of OCN 682. The goal is a clean, API-backed web map that’s easy to read and fun to look at.
+
+# Libraries
+
+Load *tidyverse* for data handling, *ggmap* (with a Google Maps API key) for the satellite basemap, *ggspatial* for the north arrow and scale bar, and *ggimage/emojifont* for emoji markers.
+
+```{r}
+library(tidyverse)     # to load Cats on the Move
+library(ggmap)         # Google tiles
+library(ggspatial)     # scale bar & north arrow
+library(ggimage)       # geom_emoji()
+library(emojifont)     # emoji names like "smile_cat"
+```
+
+
+# Data
+
+**Cats on the Move!**  contains GPS locations of free-roaming pet cats in southwest England (Cornwall) from **TidyTuesday**. The main table, *cats_uk*, has one row per fix with WGS84 coordinates (location_lat, location_long), a timestamp, and a cat ID. A companion table, *cats_uk_reference*, provides per-cat metadata (e.g., name/sex where available) that can be joined by ID.
+
+```{r}
+tuesdata <- tidytuesdayR::tt_load('2023-01-31')
+tuesdata <- tidytuesdayR::tt_load(2023, week = 5)
+
+cats_uk <- tuesdata$cats_uk
+cats_uk_reference <- tuesdata$cats_uk_reference
+
+```
+
+# Center on the Data and Zoom in
+
+Compute the center of the cat locations and pass it to get_map() with a chosen 10 zoom and maptype = "satellite". This avoids geocoding strings and ensures the map is centered exactly on the cats’ footprint.
+
+```{r}
+
+WP <- c(lon = mean(cats_uk$location_long, na.rm = TRUE),
+        lat = mean(cats_uk$location_lat,  na.rm = TRUE))
+
+Base_Map <- ggmap::get_map(WP, zoom = 10, maptype = "satellite")
+```
+
+# Plot 
+Draw the Google basemap, add a **cat emoji** at each GPS fix, and overlay a **scale bar** (bottom-left) and **north arrow** (top-left). We use **coord_sf(crs = 4326)** so the scale bar is computed correctly in WGS84, and apply a **minimal theme** to remove extra grid/axes so the symbols pop.
+
+```{r}
+#| label: fig-cats-map
+#| fig-cap: "Movements of free roaming cats in Southwest Englad."
+#| fig-alt: "Satellite map with cat emojis at tracked locations"
+
+
+ggmap(Base_Map) +
+  geom_emoji(
+    "heart_eyes_cat", # emoji name
+    x = cats_uk$location_long, 
+    y = cats_uk$location_lat,
+    size = 6, # size of emoji
+    color = "white" # color of emoji
+  ) +
+  ggspatial::annotation_scale(location = "bl", bar_cols = c("yellow","white")) + # add a scale bar
+  ggspatial::annotation_north_arrow(location = "tl") + # add a north arrow
+  coord_sf(crs = sf::st_crs(4326), # display CRS
+           default_crs = sf::st_crs(4326),  # making sure it is in the proper format 
+           expand = FALSE) + 
+  labs(title = "Cats on the Move (UK) — Google Satellite", # figure title
+       subtitle = "TidyTuesday", # figure subtitle
+       x = NULL, y = NULL) + # hide axis title
+  theme_minimal(base_size = 12) +
+  theme(panel.grid = element_blank(),
+        axis.title = element_blank(),
+        plot.title = element_text(face = "bold"))
+
+```
+
+
+
+
