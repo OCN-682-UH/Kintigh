@@ -108,7 +108,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#plot" id="toc-plot" class="nav-link" data-scroll-target="#plot">Plot</a>
   <ul class="collapse">
-  <li><a href="#animate" id="toc-animate" class="nav-link" data-scroll-target="#animate">Animate!</a></li>
+  <li><a href="#animate-and-save-with-some-expected-problems" id="toc-animate-and-save-with-some-expected-problems" class="nav-link" data-scroll-target="#animate-and-save-with-some-expected-problems">Animate and Save With Some (expected) Problems</a></li>
+  <li><a href="#bad-plot-actual-save" id="toc-bad-plot-actual-save" class="nav-link" data-scroll-target="#bad-plot-actual-save">Bad Plot Actual Save</a></li>
   <li><a href="#bad-plot-discussion" id="toc-bad-plot-discussion" class="nav-link" data-scroll-target="#bad-plot-discussion">Bad Plot Discussion</a>
   <ul class="collapse">
   <li><a href="#why-is-it-a-bad-plot" id="toc-why-is-it-a-bad-plot" class="nav-link" data-scroll-target="#why-is-it-a-bad-plot">Why is it a bad plot?</a></li>
@@ -503,37 +504,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>  gganimate<span class="sc">::</span><span class="fu">ease_aes</span>(<span class="st">"linear"</span>) <span class="co"># ADDED ANIMATION EASING</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="animate" class="level2">
-<h2 class="anchored" data-anchor-id="animate">Animate!</h2>
+<section id="animate-and-save-with-some-expected-problems" class="level2">
+<h2 class="anchored" data-anchor-id="animate-and-save-with-some-expected-problems">Animate and Save With Some (expected) Problems</h2>
+<p>I originally used coord_polar() to force a “circular” bar chart, but gganimate + auto-scaling in the HTML render kept collapsing/zooming the frame (and sometimes hit max device size). To guarantee the animation exports and shows up in Quarto, we switch to cartesian with big margins and clip=‘off’. This is deliberate: it renders reliably AND illustrates how bad formatting choices + animation can wreck a plot in practice.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the animated plot</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>p_bad_final <span class="ot">&lt;-</span> p_bad <span class="sc">+</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="sc">+</span> <span class="co"># avoid text clipping</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>p_bad_final <span class="ot">&lt;-</span> p_bad <span class="sc">+</span> <span class="co"># start with bad plot</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="sc">+</span> <span class="co"># let the labels/legends spill outside the panel</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span>(<span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">20</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">20</span>)) <span class="co"># add breathing room</span></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Render straight to file</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Render straight to file and make an explicit path so quarto can find it</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>out_gif <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Good_Plot_Bad_Plot"</span>,<span class="st">"Output"</span>,<span class="st">"Bad_StaticPolar.gif"</span>)</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>gganimate<span class="sc">::</span><span class="fu">animate</span>(</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>p_bad_final,</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="at">nframes =</span> <span class="dv">45</span>,</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="at">fps =</span> <span class="dv">8</span>,</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="at">width =</span> <span class="dv">640</span>,</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="at">height =</span> <span class="dv">640</span>,</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="at">units =</span> <span class="st">"px"</span>,</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="at">bg =</span> <span class="st">"white"</span>,</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="at">renderer =</span> gganimate<span class="sc">::</span><span class="fu">gifski_renderer</span>(<span class="at">file =</span> out_gif),</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="at">progress =</span> <span class="cn">FALSE</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Render the animation frames</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>gganimate<span class="sc">::</span><span class="fu">animate</span>(</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>p_bad_final,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="at">nframes =</span> <span class="dv">45</span>, <span class="co"># short, choppy animation (exaggerates motion without insight)</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="at">fps =</span> <span class="dv">8</span>, <span class="co"># low frame rate → stuttery look</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="at">width =</span> <span class="dv">640</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="at">height =</span> <span class="dv">640</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="at">units =</span> <span class="st">"px"</span>, <span class="co"># use pixels to avoid runaway device scaling</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="at">bg =</span> <span class="st">"white"</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="at">renderer =</span> gganimate<span class="sc">::</span><span class="fu">gifski_renderer</span>(<span class="at">file =</span> out_gif), <span class="co"># write directly to the GIF file via gifski</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="at">progress =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="Good_Bad_Plot_files/figure-html/unnamed-chunk-7-1.gif" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="bad-plot-actual-save" class="level2">
+<h2 class="anchored" data-anchor-id="bad-plot-actual-save">Bad Plot Actual Save</h2>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Where to save </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>out_dir <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Good_Plot_Bad_Plot"</span>, <span class="st">"Output"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(out_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>out_gif <span class="ot">&lt;-</span> <span class="fu">file.path</span>(out_dir, <span class="st">"Bad_Polar.gif"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Force cartesian (so it actually renders) + keep the chaotic margins</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>p_bad_cart <span class="ot">&lt;-</span> p_bad <span class="sc">+</span>  <span class="co"># assumes you already created p_bad as in your code</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">20</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">20</span>))</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Render straight to file (fixed pixel device; no HTML involved)</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>gganimate<span class="sc">::</span><span class="fu">animate</span>(</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  p_bad_cart,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">nframes  =</span> <span class="dv">45</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">fps      =</span> <span class="dv">8</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">width    =</span> <span class="dv">640</span>,</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">height   =</span> <span class="dv">640</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">units    =</span> <span class="st">"px"</span>,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">bg       =</span> <span class="st">"white"</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">renderer =</span> gganimate<span class="sc">::</span><span class="fu">gifski_renderer</span>(<span class="at">file =</span> out_gif),</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">progress =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Good_Bad_Plot_files/figure-html/unnamed-chunk-8-1.gif" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>

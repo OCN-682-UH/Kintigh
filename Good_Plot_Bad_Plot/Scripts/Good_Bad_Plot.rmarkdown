@@ -433,3 +433,4 @@ anim_save(here::here("Good_Plot_Bad_Plot","Output","Bad_Cartesian.gif"),
 -   **Animation adds confusion**. The reveal over time suggests precision but actually obscures magnitudes and makes it harder to compare characters at any single moment.
 
 
+

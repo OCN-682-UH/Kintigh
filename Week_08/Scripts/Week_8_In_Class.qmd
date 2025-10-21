@@ -1,0 +1,127 @@
+---
+title: "Week 8 Class A"
+author: "Bella Kintigh"
+format: html
+message: false
+warning: false
+---
+
+# Purpose: 
+
+Using {stringr} to clean up strings (part of tidyverse). Intro to regex (regular expressions). Using {tidytext} for text mining/analysis. Make a wordcloud.
+
+# Libraries
+
+```{r}
+library(here)
+library(tidyverse)
+library(tidytext)
+library(wordcloud2)
+library(janeaustenr)
+```
+
+# What is a string?
+
+String and character are the same thing!
+
+# Family functions in the {stringr} package
+
+## Manipulation
+Paste words together. This can be useful if say you have a two columns of treatments and you want to combine them into one (e.g., high temp, low temp and high pH, low pH).
+
+```{r}
+shapes <- c("Square", "Circle", "Triangle")
+paste("My favorite shape is a", shapes)
+
+animal <- c("Squid", "Billfish", "Sharks")
+paste("My favvorite animal is a", animal)
+```
+
+### Individual characters
+
+Easy way to find out how long your string is
+
+```{r}
+str_length(shapes) # how many letters are in each word
+
+```
+
+
+## White space
+
+Removes white space and easy way to make sure everything is the same
+
+```{r}
+bad_treatments <- c("High", " High", "High ", "Low", " Low")
+bad_treatments
+
+
+str_trim(bad_treatments)
+
+str_pad(badtreatments, 5, side = "right") # add a white space to the right side after the 5th character, this makes sure that your string are the same lengths
+```
+
+## Locale sensitive
+
+```{r}
+x <- "I love R!"
+
+str_to_upper(x)
+str_to_lower(x)
+```
+
+## Pattern matching
+
+```{r}
+data<-c("AAA", "TATA", "CTAG", "GCTT")
+
+# find all the strings with an A
+str_view(data, pattern = "A")
+
+str_detect(data, pattern = "A")
+
+str_detect(data, pattern = "AT")
+
+# Locate a pattern
+str_locate(data, pattern = "AT")
+```
+
+
+# Metacharacters
+
+```{r}
+vals<-c("a.b", "b.c","c.d")
+
+#string, pattern, replace
+str_replace(vals, "\\.", " ")
+```
+
+# Regex
+
+```{r}
+strings<-c("550-153-7578",
+         "banana",
+         "435.114.7586",
+         "home: 672-442-6739")
+
+phone <- "([2-9][0-9]{2})[- .]([0-9]{3})[- .]([0-9]{4})"
+
+# Which strings contain phone numbers?
+str_detect(strings, phone)
+
+strings %>%
+  str_replace_all("\\.", "\\-") %>%
+  str_subset("[0-9]") %>%
+  str_replace_all("[a-z-A-Z]|\\:", "")
+```
+
+
+
+
+
+
+
+
+
+
+
