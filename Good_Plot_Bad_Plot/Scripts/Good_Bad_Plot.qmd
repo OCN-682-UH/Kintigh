@@ -396,19 +396,72 @@ progress = FALSE
 
 ## Bad Plot Actual Save
 
-For reference, this is what it’s supposed to look like (still bad, but better). I exported a separate file that kept the original coord_polar() look, however does not embed to avoid the HTML issue. The difference shows how important it is to think about rendering format and output settings, not just the plot itself — sometimes the file type and device you use can completely change how your visualization behaves.
+For reference, this is what it’s supposed to look like (still bad, but better). I exported a separate file that kept the original coord_polar() look, however does not embed to avoid the HTML issue and is "commented" so it does not render to HTML (it will take a very very long time), but the plot is saved in the output file! The difference shows how important it is to think about rendering format and output settings, not just the plot itself — sometimes the file type and device you use can completely change how your visualization behaves.
 
 ```{r}
 
-# Save and animate!
+# ----------- Base Plot ----------------------
 
-anim_save(here::here("Good_Plot_Bad_Plot","Output","Bad_Cartesian.gif"), 
-          animation = animate(p_bad,
-                              fps = 12, 
-                              nframes = 120,
-                              width = 900,
-                              height = 900,
-                              renderer = gifski_renderer()))
+# p_bad_base <- 
+#  ggplot(unmask_tl %>% 
+#           arrange(air_dt), 
+#         aes(x = who, 
+#             y = unmasks_cum, 
+#             fill = who, group = who)) +  # sort by date so the reveal animates in order, map character to x/fill and use group for animation
+#  theme_dark(base_family = "sans") +  # noisy dark theme for maximum distraction
+#  geom_col(width = 0.9, 
+#           color = "#FF00FF", 
+#           linewidth = 1.5, 
+#           alpha = 0.7, 
+#           show.legend = TRUE) +  # thick magenta outlines and semi-opaque bars to create clutter
+#  geom_text(aes(label = paste0(who, "\n(", unmasks_cum, ")")), 
+#            vjust = -0.5, 
+#            color = "#787276", 
+#            size = 2.5, 
+#            show.legend = FALSE) +  # overlapping labels that fight readability
+#  coord_polar(theta = "y") +  # misuse polar coords: map angle to cumulative counts (viewers expect length, not angle)
+#  scale_fill_manual(values = c("Daphne"="#00FFFF",
+#                               "Fred"="#FFD700",
+#                               "Scooby"="#FF4500",
+#                               "Shaggy"="#32CD32",
+#                               "Velma"="#9400D3"), 
+#                    name = "Unmasker (Legend A)") +  # garish rainbow-like palette with a boastful legend name
+#  labs(title = "MYSTERY INC.'S CUMULATIVE UNMASKING EFFORT (1969 - {frame_time})", 
+#       subtitle = "CIRCULAR BAR CHART OF DECADES OF DATA", 
+#       x = "WHICH CHARACTER?", 
+#       y = "CUMULATIVE COUNT", 
+#       caption = "Visualization is hard. Data: TidyTuesday") +  # loud, opinionated titling that doesn’t aid interpretation
+#  theme(plot.title = element_text(family = "serif", 
+#                                  size = 20, 
+#                                  color = "#FF00FF", 
+#                                  face = "bold"),  # oversized neon title for visual noise
+#        plot.subtitle = element_text(size = 15, 
+#                                     color = "#FFD700", 
+#                                     face = "italic"),  # giant subtitle further crowding the canvas
+#        axis.text = element_text(color = "#00FFFF", 
+#                                 face = "bold"),  # bright axis text that clashes with the bars
+#        panel.grid.major = element_line(color = "red", 
+#                                        linewidth = 1.0),  # heavy major gridlines add interference
+#        panel.grid.minor = element_line(color = "yellow", 
+#                                        linewidth = 0.2),  # minor gridlines too, because why not
+#        plot.background = element_rect(fill = "#ddd"))  # mismatched grey background that doesn’t fit the theme
+
+# ---------------- Now add animation! ----------------------
+
+# p_bad_anim <- p_bad_base + 
+#  gganimate::transition_reveal(air_dt) + gganimate::ease_aes("linear") 
+
+# ---------------- Save as GIF --------------------------
+
+# anim_save(here::here("Good_Plot_Bad_Plot","Output","Bad_Cartesian.gif"), 
+#            animation = animate(p_bad_anim, 
+#                                  fps = 8, 
+#                                  nframes = 50, 
+#                                  width = 640, 
+#                                  height = 640,
+#                                  renderer = gifski_renderer())) 
+  
+
 ```
 
 

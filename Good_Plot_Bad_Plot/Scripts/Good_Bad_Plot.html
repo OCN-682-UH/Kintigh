@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#plot" id="toc-plot" class="nav-link" data-scroll-target="#plot">Plot</a>
   <ul class="collapse">
-  <li><a href="#animate-and-save-with-some-expected-problems" id="toc-animate-and-save-with-some-expected-problems" class="nav-link" data-scroll-target="#animate-and-save-with-some-expected-problems">Animate and Save With Some (expected) Problems</a></li>
+  <li><a href="#animate-and-save---html-friendly-export-aka-cartesian-workaround" id="toc-animate-and-save---html-friendly-export-aka-cartesian-workaround" class="nav-link" data-scroll-target="#animate-and-save---html-friendly-export-aka-cartesian-workaround">Animate and Save - HTML Friendly Export (aka Cartesian Workaround)</a></li>
   <li><a href="#bad-plot-actual-save" id="toc-bad-plot-actual-save" class="nav-link" data-scroll-target="#bad-plot-actual-save">Bad Plot Actual Save</a></li>
   <li><a href="#bad-plot-discussion" id="toc-bad-plot-discussion" class="nav-link" data-scroll-target="#bad-plot-discussion">Bad Plot Discussion</a>
   <ul class="collapse">
@@ -412,7 +412,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- save ----</span></span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="fu">image_write</span>(final_img, <span class="fu">here</span>(<span class="st">"Good_Plot_Bad_Plot"</span>, <span class="st">"Output"</span>, <span class="st">"Scooby_Timeline_Final.png"</span>))</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="fu">image_write</span>(final_img, <span class="fu">here</span>(<span class="st">"Good_Plot_Bad_Plot"</span>, <span class="st">"Output"</span>, <span class="st">"Scooby_Timeline_Kintigh.png"</span>))</span>
 <span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="co"># ------ Show Plot -------------</span></span>
@@ -504,9 +504,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>  gganimate<span class="sc">::</span><span class="fu">ease_aes</span>(<span class="st">"linear"</span>) <span class="co"># ADDED ANIMATION EASING</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="animate-and-save-with-some-expected-problems" class="level2">
-<h2 class="anchored" data-anchor-id="animate-and-save-with-some-expected-problems">Animate and Save With Some (expected) Problems</h2>
-<p>I originally used coord_polar() to force a “circular” bar chart, but gganimate + auto-scaling in the HTML render kept collapsing/zooming the frame (and sometimes hit max device size). To guarantee the animation exports and shows up in Quarto, we switch to cartesian with big margins and clip=‘off’. This is deliberate: it renders reliably AND illustrates how bad formatting choices + animation can wreck a plot in practice.</p>
+<section id="animate-and-save---html-friendly-export-aka-cartesian-workaround" class="level2">
+<h2 class="anchored" data-anchor-id="animate-and-save---html-friendly-export-aka-cartesian-workaround">Animate and Save - HTML Friendly Export (aka Cartesian Workaround)</h2>
+<p>I originally made this plot using coord_polar() so it looked like a messy circular bar chart, but when I tried to render it in HTML, it kept breaking the animation export. The plot area got too large and R threw a “maximum dimension” error, which basically means the figure was too big for Quarto to handle.</p>
+<p>To fix it, I had to switch to cartesian coordinates and turn clipping off (clip = “off”), which makes the plot look even more awkward — but at least it renders correctly. <strong>This is deliberate:</strong> it renders reliably AND illustrates how bad formatting choices + animation can wreck a plot when trying to insert it into a different format.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -518,7 +519,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Render straight to file and make an explicit path so quarto can find it</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>out_gif <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Good_Plot_Bad_Plot"</span>,<span class="st">"Output"</span>,<span class="st">"Bad_StaticPolar.gif"</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>out_gif <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Good_Plot_Bad_Plot"</span>,<span class="st">"Output"</span>,<span class="st">"Bad_RectanglePolar.gif"</span>)</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Render the animation frames</span></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
@@ -545,40 +546,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="bad-plot-actual-save" class="level2">
 <h2 class="anchored" data-anchor-id="bad-plot-actual-save">Bad Plot Actual Save</h2>
+<p>For reference, this is what it’s supposed to look like (still bad, but better). I exported a separate file that kept the original coord_polar() look, however does not embed to avoid the HTML issue and is “commented” so it does not render to HTML (it will take a very very long time), but the plot is saved in the output file! The difference shows how important it is to think about rendering format and output settings, not just the plot itself — sometimes the file type and device you use can completely change how your visualization behaves.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Where to save </span></span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------- Base Plot ----------------------</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>out_dir <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"Good_Plot_Bad_Plot"</span>, <span class="st">"Output"</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(out_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>out_gif <span class="ot">&lt;-</span> <span class="fu">file.path</span>(out_dir, <span class="st">"Bad_Polar.gif"</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Force cartesian (so it actually renders) + keep the chaotic margins</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>p_bad_cart <span class="ot">&lt;-</span> p_bad <span class="sc">+</span>  <span class="co"># assumes you already created p_bad as in your code</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="sc">+</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">20</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">20</span>))</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Render straight to file (fixed pixel device; no HTML involved)</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>gganimate<span class="sc">::</span><span class="fu">animate</span>(</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  p_bad_cart,</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">nframes  =</span> <span class="dv">45</span>,</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">fps      =</span> <span class="dv">8</span>,</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">width    =</span> <span class="dv">640</span>,</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">height   =</span> <span class="dv">640</span>,</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">units    =</span> <span class="st">"px"</span>,</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">bg       =</span> <span class="st">"white"</span>,</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">renderer =</span> gganimate<span class="sc">::</span><span class="fu">gifski_renderer</span>(<span class="at">file =</span> out_gif),</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">progress =</span> <span class="cn">FALSE</span></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># p_bad_base &lt;- </span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  ggplot(unmask_tl %&gt;% </span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#           arrange(air_dt), </span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#         aes(x = who, </span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#             y = unmasks_cum, </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#             fill = who, group = who)) +  # sort by date so the reveal animates in order, map character to x/fill and use group for animation</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  theme_dark(base_family = "sans") +  # noisy dark theme for maximum distraction</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  geom_col(width = 0.9, </span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#           color = "#FF00FF", </span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#           linewidth = 1.5, </span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#           alpha = 0.7, </span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#           show.legend = TRUE) +  # thick magenta outlines and semi-opaque bars to create clutter</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  geom_text(aes(label = paste0(who, "\n(", unmasks_cum, ")")), </span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#            vjust = -0.5, </span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#            color = "#787276", </span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#            size = 2.5, </span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#            show.legend = FALSE) +  # overlapping labels that fight readability</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  coord_polar(theta = "y") +  # misuse polar coords: map angle to cumulative counts (viewers expect length, not angle)</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  scale_fill_manual(values = c("Daphne"="#00FFFF",</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="co">#                               "Fred"="#FFD700",</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co">#                               "Scooby"="#FF4500",</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co">#                               "Shaggy"="#32CD32",</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="co">#                               "Velma"="#9400D3"), </span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co">#                    name = "Unmasker (Legend A)") +  # garish rainbow-like palette with a boastful legend name</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="co">#  labs(title = "MYSTERY INC.'S CUMULATIVE UNMASKING EFFORT (1969 - {frame_time})", </span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="co">#       subtitle = "CIRCULAR BAR CHART OF DECADES OF DATA", </span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="co">#       x = "WHICH CHARACTER?", </span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="co">#       y = "CUMULATIVE COUNT", </span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="co">#       caption = "Visualization is hard. Data: TidyTuesday") +  # loud, opinionated titling that doesn’t aid interpretation</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="co">#  theme(plot.title = element_text(family = "serif", </span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  size = 20, </span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  color = "#FF00FF", </span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  face = "bold"),  # oversized neon title for visual noise</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="co">#        plot.subtitle = element_text(size = 15, </span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="co">#                                     color = "#FFD700", </span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="co">#                                     face = "italic"),  # giant subtitle further crowding the canvas</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a><span class="co">#        axis.text = element_text(color = "#00FFFF", </span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 face = "bold"),  # bright axis text that clashes with the bars</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a><span class="co">#        panel.grid.major = element_line(color = "red", </span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a><span class="co">#                                        linewidth = 1.0),  # heavy major gridlines add interference</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="co">#        panel.grid.minor = element_line(color = "yellow", </span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="co">#                                        linewidth = 0.2),  # minor gridlines too, because why not</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="co">#        plot.background = element_rect(fill = "#ddd"))  # mismatched grey background that doesn’t fit the theme</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------- Now add animation! ----------------------</span></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a><span class="co"># p_bad_anim &lt;- p_bad_base + </span></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="co">#  gganimate::transition_reveal(air_dt) + gganimate::ease_aes("linear") </span></span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------- Save as GIF --------------------------</span></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a><span class="co"># anim_save(here::here("Good_Plot_Bad_Plot","Output","Bad_Cartesian.gif"), </span></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a><span class="co">#            animation = animate(p_bad_anim, </span></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  fps = 8, </span></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  nframes = 50, </span></span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  width = 640, </span></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  height = 640,</span></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  renderer = gifski_renderer())) </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Good_Bad_Plot_files/figure-html/unnamed-chunk-8-1.gif" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
 </div>
 </section>
 <section id="bad-plot-discussion" class="level2">
