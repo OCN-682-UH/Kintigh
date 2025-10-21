@@ -9,7 +9,7 @@
 <meta name="author" content="Isabella Kintigh">
 <meta name="dcterms.date" content="2025-10-21">
 
-<title>Good Plot / Bad Plot — Scooby-Doo</title>
+<title>Good Plot / Bad Plot — Scooby-Doo Edition</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -70,17 +70,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="Good_Bad_Plot_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="Good_Bad_Plot_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="Good_Bad_Plot_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="Good_Bad_Plot_files/libs/bootstrap/bootstrap-769b268fb290e116fe386cf5612ac759.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="Good_Bad_Plot_files/libs/bootstrap/bootstrap-ceb3cc9b7eaae3ea3617014063f05c9e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <style>html{ scroll-behavior: smooth; }</style>
-<link href="Good_Bad_Plot_files/libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
-<script src="Good_Bad_Plot_files/libs/pagedtable-1.1/js/pagedtable.js"></script>
 
 
 </head>
 
 <body class="quarto-light">
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-full">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <h1 class="title">Good Plot / Bad Plot — Scooby-Doo Edition</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page-left">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Isabella Kintigh </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 21, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="page-columns page-rows-contents page-layout-full">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
   <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
@@ -96,7 +122,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#good-plot" id="toc-good-plot" class="nav-link" data-scroll-target="#good-plot">Good Plot</a>
   <ul class="collapse">
   <li><a href="#base-plot" id="toc-base-plot" class="nav-link" data-scroll-target="#base-plot">Base plot</a></li>
-  <li><a href="#adding-images" id="toc-adding-images" class="nav-link" data-scroll-target="#adding-images">Adding Images</a></li>
+  <li><a href="#adding-images-and-saving" id="toc-adding-images-and-saving" class="nav-link" data-scroll-target="#adding-images-and-saving">Adding Images and Saving</a></li>
   <li><a href="#good-plot-discussion" id="toc-good-plot-discussion" class="nav-link" data-scroll-target="#good-plot-discussion">Good Plot Discussion</a>
   <ul class="collapse">
   <li><a href="#why-is-it-a-good-plot" id="toc-why-is-it-a-good-plot" class="nav-link" data-scroll-target="#why-is-it-a-good-plot">Why is it a good plot?</a></li>
@@ -118,37 +144,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul>
 </nav>
 </div>
-<main class="content column-page-left" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Good Plot / Bad Plot — Scooby-Doo</h1>
-</div>
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
 
 
 
-<div class="quarto-title-meta column-page-left">
-
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Isabella Kintigh </p>
-          </div>
-  </div>
-    
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">October 21, 2025</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
-
-
-</header>
 
 
 <section id="introduction" class="level2">
@@ -175,12 +174,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(showtext)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cowplot)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magick)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gganimate)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gifski)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magick)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gganimate)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gifski)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -357,8 +354,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 </section>
-<section id="adding-images" class="level2">
-<h2 class="anchored" data-anchor-id="adding-images">Adding Images</h2>
+<section id="adding-images-and-saving" class="level2">
+<h2 class="anchored" data-anchor-id="adding-images-and-saving">Adding Images and Saving</h2>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>

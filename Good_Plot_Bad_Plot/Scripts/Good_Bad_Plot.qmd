@@ -1,19 +1,20 @@
 ---
-title: "Good Plot / Bad Plot — Scooby-Doo"
+title: "Good Plot / Bad Plot — Scooby-Doo Edition"
 author: "Isabella Kintigh"
 date: "2025-10-21"
 format:
   html:
-    theme: flatly
+    theme: minty      
     toc: true
     code-fold: show
-    df-print: paged
     smooth-scroll: true
     page-layout: full
+    title-block-banner: true
 execute:
   echo: true
   warning: false
   message: false
+
 resources: 
   - ../Images/**
 ---
@@ -42,8 +43,6 @@ library(tidytuesdayR)
 library(tidyverse)
 library(lubridate)
 library(showtext)
-library(ggrepel)
-library(cowplot)
 library(here)
 library(magick)
 library(gganimate)
@@ -218,7 +217,7 @@ ggsave(
 
 ```
 
-## Adding Images
+## Adding Images and Saving
 
 ```{r}
 
