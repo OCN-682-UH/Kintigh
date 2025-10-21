@@ -33,8 +33,8 @@ For this assignment, I focused on unmask events (the moment the gang reveals the
 
 The goal of this assignment is to:
 
-1.  Create a **terrible, misleading, and painful** plot (“Bad Plot”), and
-2.  Create a **clear, accurate, and visually effective** plot (“Good Plot”), both using the same underlying data.
+1.  Create a **clear, accurate, and visually effective** plot (“Good Plot”), and
+2.  Create a **terrible, misleading, and painful** plot (“Bad Plot”), both using the same underlying data.
 
 # Libraries
 
@@ -217,7 +217,7 @@ ggsave(
 
 ```
 
-## Adding Images and Saving
+## Add Images and Save
 
 ```{r}
 
@@ -483,5 +483,6 @@ For reference, this is what it’s supposed to look like (still bad, but better)
 -   **Over-annotation**. Titles, subtitle, huge legend, thick grids, captions all crowd the canvas while conveying little.
 
 -   **Animation adds confusion**. The reveal over time suggests precision but actually obscures magnitudes and makes it harder to compare characters at any single moment.
+
 
 
