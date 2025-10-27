@@ -1,0 +1,49 @@
+---
+title: "Week 9 Lesson B"
+author: "Bella Kintigh"
+format: html
+warning: false
+message: false
+---
+
+# Purpose
+
+Watch and write notes for lecture B of week 9 of OCN 682.
+
+# Libraries
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+# Data
+
+```{r}
+income_mean <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-02-09/income_mean.csv')
+
+glimpse(income_mean)
+```
+
+# Important things to remember 
+
+- Factors are important for categorical data
+
+
+# Working with star wars data
+
+```{r}
+starwars %>%
+  filter(!is.na(species)) %>%
+  count(species, sort = TRUE)
+```
+
+
+
+
+
+
+
+
+
+
