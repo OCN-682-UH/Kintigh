@@ -1,0 +1,100 @@
+---
+title: "Week 9 Homework"
+author: "Bella Kintigh"
+format: html
+theme: darkly
+---
+
+# Purpose
+
+This project aims to clean and restructure intertidal survey data to visualize how species composition and richness vary across tide height and site latitude as part of a homework assignment for week 9 of OCN 682.
+
+# Libraries
+
+```{r}
+library(tidyverse)
+library(here)
+library(janitor)
+library(stringr)
+library(forcats)
+```
+
+# Data
+
+```{r}
+Intertidal <- read_csv(here("Week_09", "Data", "intertidaldata.csv")) %>%
+  clean_names()
+
+```
+
+# Data Wrangling
+
+```{r}
+
+Intertidal <- Intertidal %>%
+  clean_names() %>%
+  mutate(
+    quadrat = str_to_lower(quadrat), # Make everything lower case
+    quadrat = str_extract(quadrat, "(low|mid|high)"),  # pull out the valid word
+    quadrat = str_trim(quadrat), # Trim any white spaces
+    quadrat = factor(quadrat, 
+                      levels = c("low", "mid", "high"), ordered = TRUE) # turn it intro an ordered factor
+  )
+```
+
+# Plot
+
+```{r}
+# ---------- Get mean percent coverage -------------------
+
+avg_cover <- Intertidal %>%
+  group_by(quadrat) %>%
+  summarise( # get mean percent coverage for all wanted groups
+    algae = mean(algae, na.rm = TRUE),
+    mussels = mean(mussels, na.rm = TRUE),
+    small_barnacles = mean(small_barnacles, na.rm = TRUE),
+    large_barnacles = mean(large_barnacles, na.rm = TRUE),
+    gooseneck_barnacles = mean(gooseneck_barnacles, na.rm = TRUE),
+    anemone = mean(anemone, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(-quadrat, names_to = "taxon", values_to = "mean_cover") %>% # change format of table from wide to long
+  mutate( # Pretty names
+    taxon = recode(
+      taxon,
+      algae = "Algae",
+      mussels = "Mussels",
+      small_barnacles = "Small Barnacles",
+      large_barnacles = "Large Barnacles",
+      gooseneck_barnacles = "Gooseneck Barnacles",
+      anemone = "Anemones"
+    ))
+
+# ------------------- Plot ---------------------------------
+
+Avg_Cover_Plot <- avg_cover %>%
+  ggplot(aes(x = quadrat, y = mean_cover, fill = taxon)) +
+  geom_col() +
+  scale_fill_viridis_d(name = "Taxon") +
+  labs(
+    title = "Intertidal Community Composition Across Tide Zones",
+    x = "Tide Zone",
+    y = "Mean Percent Cover"
+  ) +
+  theme_minimal(base_size = 14)
+
+# --------------------- Visualize Plot ---------------------
+
+Avg_Cover_Plot
+
+# ---------------------- Save ---------------------
+
+ggsave(here("Week_09", "Output", "composition_by_tide_stacked.png"),
+       Avg_Cover_Plot, 
+       width = 8, 
+       height = 5, 
+       dpi = 300)
+
+```
+
+
