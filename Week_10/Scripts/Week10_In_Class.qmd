@@ -1,0 +1,233 @@
+---
+title: "Week 10 Class"
+author: "Bella Kintigh"
+format: html
+message: false
+warning: false
+---
+
+
+# Purpose
+
+Focus on functional programming.
+
+# Libraries
+
+```{r}
+library(tidyverse)
+library(here)
+library(palmerpenguins)
+library(PNWColors)
+```
+
+# Dataframes
+
+```{r}
+df <- tibble(
+  a = rnorm(10), # draws 10 random values form a normal distribution
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+head(df)
+
+# Rescale data in multiple columns (value - min/ (max - min))
+
+df <- df %>%
+  mutate(a = (a - min(a, na.rm = TRUE))/(max(a, na.rm = TRUE) - min(a, na.rm = TRUE)))
+
+# If we were to copy and paste to do this for every column there is a lot of room for error
+
+# Example 
+df<-df %>%
+  mutate(a = (a-min(a, na.rm = TRUE))/(max(a, na.rm = TRUE)-min(a, na.rm = TRUE)),
+         b = (b-min(b, na.rm = TRUE))/(max(a, na.rm = TRUE)-min(b, na.rm = TRUE)), ## ERROR
+         c = (c-min(c, na.rm = TRUE))/(max(c, na.rm = TRUE)-min(c, na.rm = TRUE)),
+         d = (d-min(d, na.rm = TRUE))/(max(d, na.rm = TRUE)-min(d, na.rm = TRUE)))
+```
+
+# Function Intro
+
+```{r}
+rescale01 <- function(x) {
+  value<-(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))
+  return(value) # value is what the name of the output is 
+}
+```
+
+# Function to Convert Degrees Fahrenheit to Celcius
+
+```{r}
+
+temp_C <- (temp_F - 32) * 5 / 9
+
+# Step 1: Name the function
+
+fahrenheit_to_celsius <- function() {
+}
+
+# Step 2: Put in the equation
+
+fahrenheit_to_celsius <- function() { 
+  temp_C <- (temp_F - 32) * 5 / 9
+}
+
+# Step 3: Decide what the arguments are
+
+fahrenheit_to_celsius <- function(temp_F) {
+  temp_C <- (temp_F - 32) * 5 / 9 
+}
+
+# Step 4: Decide what is being returned 
+
+fahrenheit_to_celsius <- function(temp_F) { 
+  temp_C <- (temp_F - 32) * 5 / 9 
+  return(temp_C)
+}
+
+# Step 5: Test it
+
+fahrenheit_to_celsius(212)
+```
+
+# Try to Make Celcius to Kelvin
+
+```{r}
+celcius + 273.15
+
+Cel_to_Kelvin <- function(cel) {
+ Kelvin <- cel + 273.15 
+ return(Kelvin)
+}
+
+Cel_to_Kelvin(0)
+```
+
+# Using Penguin Dataset
+
+```{r}
+pal<-pnw_palette("Lake", 3, type = "discrete") # my color palette 
+
+ggplot(penguins, aes(x = body_mass_g, 
+                     y = bill_length_mm, 
+                     color = island)) +
+  geom_point() +
+  geom_smooth(method = "lm") + # add a linear model
+  scale_color_manual("Island", values=pal) +   # use pretty colors and another example of how to manually change the legend title for colors
+  theme_bw()
+
+# -------------------------------- Now make a function --------------------------
+
+# Step 1: Paste original in to visualize 
+
+my_plot <- function(){
+  pal<-pnw_palette("Lake", 3, type = "discrete") # my color palette 
+
+ggplot(penguins, aes(x = body_mass_g, 
+                     y = bill_length_mm, 
+                     color = island)) +
+  geom_point() +
+  geom_smooth(method = "lm") + # add a linear model
+  scale_color_manual("Island", values=pal) +   # use pretty colors and another example of how to manually change the legend title for colors
+  theme_bw()
+}
+
+# Step 2: Add in arguments, what are they?
+
+myplot<-function(data, x, y){
+
+  pal<-pnw_palette("Lake",3, type = "discrete") # my color palette 
+
+  ggplot(data, aes(x = x, y =y , color = island)) +
+    geom_point() +
+    geom_smooth(method = "lm") + # add a linear model
+    scale_color_manual("Island", values=pal) +   # use pretty colors and change the legend title
+    theme_bw()
+}
+
+# However if we tried to insert penguin data and use our columns, we couldn't because it doesn't know that the bodymass columns lives in penguins so we need to be specific and use curly-curlies {{}}
+
+# Step 2.5: Make sure to use curly-curlies when appropriate 
+
+myplot<-function(data, x, y){
+  
+  pal<-pnw_palette("Lake",3, type = "discrete") # my color palette
+  
+  ggplot(data, aes(x = {{x}}, y = {{y}} , color = island)) + # Curly-Curlies!
+    geom_point() +
+    geom_smooth(method = "lm") + # add a linear model
+    scale_color_manual("Island", values=pal) +   # use pretty colors and change the legend title
+    theme_bw()
+}
+
+# Step 3: Visualize
+myplot(data = penguins, x = body_mass_g, y = bill_length_mm)
+
+# -------------------------- Adding Defaults ------------------------------
+
+myplot<-function(data = penguins, x, y){ # Defaults to penguin data 
+pal<-pnw_palette("Lake",3, type = "discrete") # my color palette 
+ggplot(data, aes(x = {{x}}, y = {{y}} , color = island))+
+  geom_point()+
+  geom_smooth(method = "lm")+ # add a linear model
+  scale_color_manual("Island", values=pal)+   # use pretty colors and change the legend title
+  theme_bw()
+}
+
+# So now you can just write this
+
+myplot(x = body_mass_g, y = flipper_length_mm)
+
+# -------------------------- Layering the plots ------------------------------
+
+
+myplot(x = body_mass_g, y = flipper_length_mm)+
+  labs(x = "Body mass (g)",
+       y = "Flipper length (mm)")
+```
+
+
+# If-else Statements
+
+```{r}
+a <- 4
+b <- 5
+
+# Suppose that if a > b then f should be = to 20, else f should be equal to 10. Using if/else we:
+
+if (a > b) { # my question
+  f <- 20 # if it is true give me answer 1
+    } else { # else give me answer 2
+  f <- 10
+    }
+
+f
+
+# ----------------- Adding an argument for penguin data ------------------------
+
+myplot<-function(data = penguins, x, y, lines = TRUE ){ # add new argument for lines
+  pal<-pnw_palette("Lake", 3, type = "discrete") # my color palette 
+  if(lines == TRUE){
+    ggplot(data, aes(x = {{x}}, y = {{y}} , color = island)) +
+      geom_point() +
+      geom_smooth(method = "lm") + # add a linear model
+      scale_color_manual("Island", values=pal) +   # use pretty colors and change the legend title
+      theme_bw()
+}
+  else{
+    ggplot(data, aes(x = {{x}}, y = {{y}} , color = island)) +
+      geom_point() +
+      scale_color_manual("Island", values=pal)+   # use pretty colors and change the legend title
+      theme_bw()
+}
+}
+
+myplot(x = body_mass_g, y = flipper_length_mm)
+```
+
+
+
+
+
+
