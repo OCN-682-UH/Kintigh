@@ -1,0 +1,12 @@
+name: Example
+title: Example
+username: ikintigh
+account: ikintigh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 15968711
+bundleId: 11132262
+url: https://ikintigh.shinyapps.io/Example/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
