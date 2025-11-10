@@ -1,0 +1,128 @@
+---
+title: "Tidy Tuesday - 2025.11.04"
+author: "Bella Kintigh"
+format: html
+warning: FALSE
+message: FALSE
+theme: minty
+---
+
+# Purpose
+
+In this assignment, I aim to:
+
+-   Practice tidying and visualizing real-world environmental data using tools from the tidyverse
+-   Focus on the distribution of lead levels across different data sources
+-   Reflect on how data collection methods may affect interpretation and trust in science
+-   Learn at least one new R or Quarto technique as part of this week’s growth goal
+
+# Libraries
+
+```{r}
+library(tidyverse)
+library(tidytuesdayR)
+library(ggthemes)
+library(here)
+```
+
+
+# Data 
+
+This week’s #TidyTuesday assignment explores lead levels in water samples collected in Flint, Michigan during the 2015 water crisis. The dataset, published by Loux and Gibson (2018), includes data from both the Michigan Department of Environment (MDEQ) and a citizen science initiative led by Prof. Marc Edwards and Virginia Tech. The dual-source nature of the dataset offers an opportunity to examine not only univariate statistics and data visualization, but also issues of sampling bias, community science, and data ethics.
+
+## Load in data
+
+```{r}
+tuesdata <- tidytuesdayR::tt_load('2025-11-04')
+
+# Separating data
+
+flint_mdeq <- tuesdata$flint_mdeq
+
+flint_vt <- tuesdata$flint_vt
+
+```
+
+
+# Data wrangling
+
+```{r}
+# ------------------------ Prepare the data ------------------------
+
+vt_labeled <- flint_vt %>%
+  filter(!is.na(lead)) %>%
+  rename(Lead = lead) %>% # just making the name of the column nicer
+  mutate(source = "Virginia Tech")
+
+mdeq_labeled <- flint_mdeq %>%
+  filter(!is.na(lead2)) %>%
+  rename(Lead = lead2) %>% # make the column name nicer and match vt
+  mutate(source = "MDEQ")
+
+# -------------------------- Combine data -------------------------------
+
+flint_combined <- bind_rows(vt_labeled, mdeq_labeled)
+
+```
+
+
+# Plot
+
+This figure compares lead levels measured in Flint, Michigan water samples collected in 2015 by two different sources: the Michigan Department of Environmental Quality (MDEQ) and a citizen science initiative led by Virginia Tech. Each point represents an individual water sample, plotted by sample number (not matched across sources). The red dashed line marks the EPA’s action level of 15 ppb, above which lead concentrations are considered hazardous. Notably, the Virginia Tech data includes a number of high-lead samples that exceed this threshold, highlighting potential discrepancies between government and community-reported data. This visual emphasizes the importance of independent data collection and transparency in public health crises.
+
+
+```{r}
+plot <- ggplot(flint_combined, 
+       aes(x = sample, 
+           y = Lead, 
+           color = source)) +
+  geom_point(alpha = 0.7, size = 2) + # semi-transparent data points 
+  
+  # add the EPA action level line 
+  geom_hline(yintercept = 15, linetype = "dashed", color = "#990000", linewidth = 0.6) +
+  annotate("text",  # annotation label 
+           x = max(flint_combined$sample) - 5, 
+           y = 14, 
+           label = "EPA action level", 
+           hjust = 0.8, 
+           vjust = 1.5,
+           color = "#990000",  # same as the line
+           size = 3) +
+
+  # Title, subtitle, axis labels, and legend title
+  labs(
+    title = "Lead Levels in Flint Water Samples (2015)",
+    subtitle = "Comparing Virginia Tech and MDEQ Data Collection",
+    x = "Sample Number (Not location-matched)",
+    y = "Lead (ppb)",
+    color = "Data Source"
+  ) +
+
+  # Customize the color palette for clarity and contrast
+  scale_color_manual(
+    values = c(
+      "Virginia Tech" = "#549F93",  # deep blue
+      "MDEQ" = "#503047"            # vibrant red
+    )
+  ) +
+
+  # Apply solarized theme
+  theme_solarized()
+
+plot
+```
+
+
+# Save Plot
+
+```{r}
+ggsave(here("Tidy_Tuesday","11_04_2025", "Output", "Flint_Water_Plot.png"),
+       plot, 
+       width = 8, 
+       height = 5, 
+       dpi = 300)
+```
+
+
+
+
