@@ -1,0 +1,12 @@
+name: kintigh
+title:
+username: ikintigh
+account: ikintigh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 15968489
+bundleId: 11132250
+url: https://ikintigh.shinyapps.io/kintigh/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

@@ -1,0 +1,12 @@
+name: cpue-explorer-bigeye
+title: cpue-explorer-bigeye
+username: ikintigh
+account: ikintigh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 16025389
+bundleId: 11160202
+url: https://ikintigh.shinyapps.io/cpue-explorer-bigeye/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
