@@ -16,3 +16,6 @@ This repo demonstrates my progress in learning R, including:
 -   Writing and organizing reproducible R code
 -   Practicing Git/GitHub workflows
 -   Building skills in data analysis and visualization
+
+## Shiny App Links:
+- Week 11 Homework Shiny App: [https://ikintigh.shinyapps.io/cpue-explorer-bigeye/](https://ikintigh.shinyapps.io/cpue-explorer-bigeye/)
