@@ -1,0 +1,110 @@
+---
+title: "Tidy Tuesday - 2025.11.11"
+author: "Bella Kintigh"
+format: html
+warning: FALSE
+message: FALSE
+theme: minty
+---
+
+# Purpose
+
+In this assignment, I aim to:
+
+-   Practice tidying, filtering, and visualizing time-series and country-level data
+-   Explore regional differences in TB incidence and mortality rates
+-   Learn and apply at least one new data visualization or transformation technique
+-   Reflect on how public health data can guide policy, equity, and resource allocation
+-   My new skill to learn: interactive maps
+
+# Libraries
+
+```{r}
+library(tidyverse)
+library(tidytuesdayR)
+library(leaflet)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(here)
+```
+
+# Data
+
+This week’s TidyTuesday assignment explores global tuberculosis (TB) burden data compiled by the World Health Organization (WHO). The dataset includes TB incidence, mortality, and population estimates across multiple countries and years. This assignment offers an opportunity to examine patterns in TB outcomes, evaluate geographic or temporal disparities, and build skills in data visualization and interpretation of global health metrics.
+
+## Load in data
+
+```{r}
+# TidyTuesday data
+tuesdata <- tidytuesdayR::tt_load('2025-11-11')
+
+# World country shapes
+world <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
+```
+
+## Data wrangling
+
+```{r}
+# Subset for only 2021
+tb <- tuesdata$who_tb_data %>%
+  filter(year == 2021) %>%
+  select(country, inc = e_inc_100k)
+
+# Join TB data to world map
+map_data <- world %>%
+  left_join(tb, by = c("name" = "country"))
+```
+
+# Build leaflet map 
+
+```{r}
+leaflet(map_data) %>%
+  addTiles() %>% # Adds a default OpenStreetMap tile background
+  addPolygons(
+    fillColor = ~colorBin("YlOrRd", inc, bins = 5)(inc),
+     # Shades each country based on TB incidence (`inc`) using a yellow-to-red color scale
+     # `colorBin()` creates 5 color breaks
+    weight = 0.5, # border around each country
+    color = "#333", # border color
+    fillOpacity = 0.7, # fill for the country is slightly transparent
+    label = ~paste0(name, ": ", round(inc, 1), " cases per 100k"), # text that hovers over the country
+    highlightOptions = highlightOptions(
+      weight = 2, # thicker border when hovering
+      color = "#000", # color of border (little darker)
+      fillOpacity = 0.9, # slightly less transparent
+      bringToFront = TRUE # brings hovered country to front
+    )
+  )
+```
+
+# Save a Snapshot of Interactive Map 
+
+```{r}
+# Use combined tb and map df
+
+ggplot(map_data, aes(fill = inc)) +
+  geom_sf(color = "white") +
+  scale_fill_viridis_c(option = "C", na.value = "gray90") +
+  labs(
+    title = "TB Incidence by Country (2021)",
+    fill = "Cases per 100k"
+  ) +
+  theme_minimal()
+
+# Save it 
+
+ggsave(here("Tidy_Tuesday", "11_11_2025", "Output", "tb_map_snapshot.png"), 
+       width = 8,
+       height = 5,
+       dpi = 300)
+```
+
+
+
+
+
+
+
+
+

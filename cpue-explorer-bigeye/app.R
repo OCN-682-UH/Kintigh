@@ -31,10 +31,10 @@ ui <- fluidPage(
         selected = max(unique(bigeye_data$year))
       ),
       br(),
-      tags$img(src = "bigeye.png", height = "100px", style = "display: block; margin-top: 20px;")
+      tags$img(src = "bigeye.png", height = "100px", style = "display: block; margin-top: 20px;") # add image!
     ),
     
-    mainPanel(
+    mainPanel( # spice up the shiny app a little 
       tags$div(
         style = "background-color: #f9f9f9; padding: 15px; border-radius: 5px;",
         plotOutput("cpue_plot"),
