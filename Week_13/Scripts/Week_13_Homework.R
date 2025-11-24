@@ -65,11 +65,12 @@ summarize_pool <- function(file_path) {
   
   # calculate summary statistics for temp and light intensity
   df %>%
-    mean_temp = mean(Temp.C, na.rm = TRUE), # mean temp
-    sd_temp = sd(Temp.C, na.rm = TRUE), # standard deviation for temp
-    mean_light = mean(Intensity.lux, na.rm = TRUE), # mean light intensity
-    sd_light = sd(Intensity.lux, na.rm = TRUE) # standard deviation for light intensity
-  ) %>%
+    summarise(
+      mean_temp = mean(Temp.C, na.rm = TRUE), # mean temp
+      sd_temp = sd(Temp.C, na.rm = TRUE), # standard deviation for temp
+      mean_light = mean(Intensity.lux, na.rm = TRUE), # mean light intensity
+      sd_light = sd(Intensity.lux, na.rm = TRUE) # standard deviation for light intensity
+      ) %>%
     mutate(pool = pool_id) # add in a column for pool id 
 }
 
