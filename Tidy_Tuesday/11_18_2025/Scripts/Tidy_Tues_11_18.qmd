@@ -1,0 +1,127 @@
+---
+title: "Tidy Tuesday - 2025.18.11"
+author: "Bella Kintigh"
+format: html
+warning: FALSE
+message: FALSE
+theme: minty
+---
+
+# Purpose
+
+In this assignment, I aim to:
+
+-   Practice unnesting, tokenizing, and filtering literary text data
+-   Compare word frequency patterns between two distinct Sherlock Holmes stories
+-   Learn and apply one new data visualization technique focused on word analysis
+-   New skill learned this week: Creating and exporting stylized word clouds using wordcloud and RColorBrewer
+
+# Libraries
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(wordcloud)
+library(RColorBrewer)
+library(here)
+library(knitr)
+```
+
+# Data
+
+This week's Tidy Tuesday focuses on the complete line-by-line texts of the Sherlock Holmes stories by Sir Arthur Conan Doyle. These data offer a unique opportunity to explore literary structure, stylometry, and character-driven language differences using text mining techniques. My goal is to visualize word usage patterns from selected stories and compare narrative style between books.
+
+```{r}
+# Load in from tidytuesday
+
+tuesdata <- tidytuesdayR::tt_load(2025, week = 46)
+
+holmes <- tuesdata$holmes
+
+```
+
+## Data Wrangling
+
+```{r}
+# Filter to two books for comparison
+books_to_compare <- holmes %>%
+  filter(book %in% c("A Study In Scarlet", "The Five Orange Pips"))
+
+# Tokenize and clean 
+tokens <- books_to_compare %>%
+  unnest_tokens(word, text) %>% # break each line into individual words
+  anti_join(get_stopwords()) %>% # remove common words like "is" and "the"
+  filter(!is.na(word)) %>% # make sure no missing words are included
+  count(book, word, sort = TRUE) %>% # count the number of times the word appears
+  group_by(book) %>% # group by book 
+  slice_max(n, n = 100) %>% # keep only the top 100 words 
+  ungroup()
+
+# Split for plotting
+book1_words <- tokens %>% filter(book == "A Study In Scarlet")
+book2_words <- tokens %>% filter(book == "The Five Orange Pips")
+
+```
+
+# Plot
+
+## *Study in Scarlet* Word Plot
+
+```{r}
+#| results: 'hide'
+
+# Define the full path for the output file
+output_path <- here("Tidy_Tuesday", "11_18_2025", "Output", "sherlock_wordcloud_scarlet.png")
+
+
+# Save the next plot as a png
+png(output_path, 
+    width = 1000, 
+    height = 600)
+
+# Ensure reproducibility of word cloud layout
+set.seed(123)
+
+# Create the word cloud plot using book1_words data
+wordcloud(
+  words = book1_words$word, # the words to display
+  freq = book1_words$n, # frequency of the words
+  max.words = 100, # maximum number of words to display 
+  colors = brewer.pal(8, "Purples"))
+
+# Close the graphics device and write the image file
+dev.off()
+
+
+```
+
+![Wordcloud for A Study in Scarlet](images/sherlock_wordcloud_scarlet.png){fig-align="center"}
+
+## *The Five Orange Pips* Word Plot
+
+```{r}
+#| results: 'hide'
+
+# Save 
+output_path <- here("Tidy_Tuesday", "11_18_2025", "Output", "sherlock_wordcloud_orange.png")
+
+png(output_path, 
+    width = 1000, 
+    height = 600)
+
+
+# Plot
+set.seed(123)
+
+wordcloud(
+  words = book2_words$word, # pull words from book 2
+  freq = book2_words$n, # frequency of words
+  max.words = 100, # maximum number of words to display
+  colors = brewer.pal(8, "Oranges"))
+
+# Close the graphics device and write the image file
+dev.off()
+
+```
+
+![Wordcloud for The Five Orange Pips](images/sherlock_wordcloud_orange.png){fig-align="center"}

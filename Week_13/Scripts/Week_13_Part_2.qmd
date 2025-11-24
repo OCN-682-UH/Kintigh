@@ -1,0 +1,53 @@
+---
+title: "Week 13 In Class Part 2"
+author: "Bella Kintigh"
+format: html
+message: FALSE
+echo: FALSE
+---
+
+# Libraries 
+
+```{r}
+library(tidyverse)
+library(here)
+library(palmerpenguins)
+library(broom)
+library(performance) 
+library(modelsummary)
+library(tidymodels)
+library(pandoc)
+```
+
+# Use penguin data for GLM
+
+```{r}
+# Linear model of Bill depth ~ Bill length by species
+Peng_mod<-lm(bill_length_mm ~ bill_depth_mm*species, data = penguins)
+
+# First, always check model!!
+
+check_model(Peng_mod) # check assumptions of an lm model
+
+# Cofficients 
+coeffs<-tidy(Peng_mod) # just put tidy() around it
+coeffs
+
+# tidy r2, etc
+results<-glance(Peng_mod) 
+results
+
+# tidy residuals, etc
+resid_fitted<-augment(Peng_mod)
+resid_fitted
+
+# New model
+Peng_mod_noX<-lm(bill_length_mm ~ bill_depth_mm, data = penguins)
+#Make a list of models and name them
+models<-list("Model with interaction" = Peng_mod,
+             "Model with no interaction" = Peng_mod_noX)
+
+#Save the results as a .docx
+modelsummary(models, output = here("Week_13", "Output", "table.docx"))
+```
+
