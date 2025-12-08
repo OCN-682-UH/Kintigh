@@ -1,0 +1,112 @@
+---
+title: "Tidy Tuesday - 2025.02.12"
+author: "Bella Kintigh"
+format: html
+warning: FALSE
+message: FALSE
+theme: minty
+---
+
+# Purpose
+
+In this assignment, I aim to:
+
+-   Explore and clean the Sechselaeuten dataset, which records the Boeoegg's burn duration alongside seasonal climate variables
+
+-   Investigate whether the Boeoegg’s explosion time shows any meaningful relationship with Zurich’s summer weather
+
+-   New skill learned this week: building an interactive visualization in Quarto using {plotly} to make the analysis more engaging and exploratory
+
+# Libraries
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(plotly)
+```
+
+# Data
+
+This week’s TidyTuesday explores the quirky intersection of folklore and climate science through Zürich’s traditional spring festival. Each year, the city burns the Boeoegg—a cotton-wool snowman filled with fireworks—and locals claim that the speed at which its head explodes predicts the quality of the upcoming summer. This dataset provides burn durations alongside historical summer climate records, offering a playful opportunity to test whether the Boeoegg’s predictions hold up against measured environmental data.
+
+```{r}
+tuesdata <- tidytuesdayR::tt_load('2025-12-02')
+
+sechselaeuten <- tuesdata$sechselaeuten %>%
+  clean_names()
+  
+```
+
+## Data Wrangling
+
+```{r}
+
+sechs_df <- sechselaeuten %>%
+  # Select the variables relevant for this visualization
+  select(
+    year,
+    duration, # Boeoegg burn duration (seconds)
+    tre200m0, # mean summer temperature
+    record # festival notes
+  ) %>%
+  
+  # Remove years where burn time OR temperature is missing
+  drop_na(duration, tre200m0) %>%
+  
+  # Ensure correct types
+  mutate(
+    year = as.integer(year),
+    duration = as.numeric(duration),
+    tre200m0 = as.numeric(tre200m0)
+  )
+
+```
+
+# Plot
+
+```{r}
+# Build ggplot first (Plotly will convert it)
+plot <- sechs_df %>%
+  ggplot(aes(
+    x = duration, # burn time
+    y = tre200m0, # mean summer temperature
+    
+    # Tooltip text
+    text = paste0(
+      "Year: ", year, "<br>",
+      "Burn duration: ", duration, " sec<br>",
+      "Avg summer temp: ", tre200m0, " °C<br>",
+      "Notes: ", record
+    )
+  )) +
+  
+  # Add scatter points
+  geom_point(
+    color = "firebrick",
+    alpha = 0.85,
+    size = 3
+  ) +
+  
+  # Linear regression line
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    color = "black",
+    linewidth = 1
+  ) +
+  
+  # Plot labels and theme
+  labs(
+    title = "Boeoegg Burn Duration vs. Summer Temperature",
+    x = "Boeoegg Burn Duration (seconds)",
+    y = "Mean Summer Temperature (°C)"
+  ) +
+  
+  theme_minimal(base_size = 14)
+
+# Convert ggplot using Plotly
+ggplotly(
+  plot,
+  tooltip = "text" # use the custom hover text
+)
+```
